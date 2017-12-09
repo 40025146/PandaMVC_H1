@@ -7,21 +7,47 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using PandaMVC_H1.Models;
+using Omu.ValueInjecter;
 
 namespace PandaMVC_H1.Controllers
 {
     public class 客戶聯絡人Controller : BaseController
     {
-       
+
 
         // GET: 客戶聯絡人
-        public ActionResult Index()
+        public ActionResult Index(int? search, 客戶聯絡人 客)
         {
-            
-            var 客戶聯絡人 = 客戶聯絡人Repo.All();
-            return View(客戶聯絡人.ToList());
-        }
+            if (search == 0)
+            {
+                var data = 客戶聯絡人Repo.FindAll();
+                return View(data.ToList());
+            }
+            else if (search == 1)
+            {
+                var data = 客戶聯絡人Repo.FindCondition(客);
+                return View(data.ToList());
+            }
+            else
+            {
+                var data = 客戶聯絡人Repo.FindAll();
+                return View(data.ToList());
+            }
+            return RedirectToAction("Index/0");
 
+        }
+        [HttpPost]
+        public ActionResult SearchColumns(Search_Columns_客戶聯絡人資料 columns)
+        {
+            客戶聯絡人 客聯資 = new 客戶聯絡人();
+            客聯資.InjectFrom(columns);
+            if (columns.客戶名稱 != null && columns.客戶名稱 != "")
+            {
+                var 客戶data = 客戶資料Repo.Find名稱(columns.客戶名稱);
+                客聯資.客戶資料 = 客戶data;
+            }
+            return Index(1, 客聯資);
+        }
         // GET: 客戶聯絡人/Details/5
         public ActionResult Details(int? id)
         {
@@ -90,6 +116,8 @@ namespace PandaMVC_H1.Controllers
             {
                 //db.Entry(客戶聯絡人).State = EntityState.Modified;
                 // db.SaveChanges();
+                客戶聯絡人 客 = 客戶聯絡人Repo.Find(客戶聯絡人.Id);
+                客.InjectFrom(客戶聯絡人);
                 客戶聯絡人Repo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
             }

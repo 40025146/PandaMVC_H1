@@ -15,12 +15,38 @@ namespace PandaMVC_H1.Controllers
         
 
         // GET: 客戶銀行資訊
-        public ActionResult Index()
+        public ActionResult Index(int? search, 客戶銀行資訊 客)
         {
-            var 客戶銀行資訊 = 客戶銀行資訊Repo.All();
-            return View(客戶銀行資訊.ToList());
+            if (search == 0)
+            {
+                var data = 客戶銀行資訊Repo.FindAll();
+                return View(data.ToList());
+            }
+            else if (search == 1)
+            {
+                var data = 客戶銀行資訊Repo.FindCondition(客);
+                return View(data.ToList());
+            }
+            else
+            {
+                var data = 客戶銀行資訊Repo.FindAll();
+                return View(data.ToList());
+            }
+            return RedirectToAction("Index/0");
+           
         }
-
+        [HttpPost]
+        public ActionResult SearchColumns(Search_Columns_客戶銀行資料 columns)
+        {
+            客戶銀行資訊 客銀資 = new 客戶銀行資訊();
+            客銀資.InjectFrom(columns);
+            if (columns.客戶名稱 != null && columns.客戶名稱!="")
+            {
+                var 客戶data = 客戶資料Repo.Find名稱(columns.客戶名稱);
+                客銀資.客戶資料 = 客戶data;
+            }
+            return Index(1, 客銀資);
+        }
         // GET: 客戶銀行資訊/Details/5
         public ActionResult Details(int? id)
         {

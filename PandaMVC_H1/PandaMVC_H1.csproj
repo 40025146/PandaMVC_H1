@@ -323,6 +323,9 @@
     <Content Include="Views\客戶清單\Details.cshtml" />
     <Content Include="Views\客戶清單\Edit.cshtml" />
     <Content Include="Views\客戶清單\Index.cshtml" />
+    <Content Include="Views\客戶資料\SearchColumns.cshtml" />
+    <Content Include="Views\客戶銀行資訊\SearchColumns.cshtml" />
+    <Content Include="Views\客戶聯絡人\SearchColumns.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

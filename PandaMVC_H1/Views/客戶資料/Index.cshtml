@@ -4,11 +4,26 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>客戶資料</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+
+@using (Html.BeginForm("SearchColumns","客戶資料","post"))
+{
+<table class="table table-bordered">
+    <tr><th></th><th>客戶名稱</th><th>電話</th><th>地址</th><th>Email</th><th>客戶分類</th></tr>
+    <tr>
+        <td><input type="submit" id="search" class="btn btn-primary" value="搜尋" /></td>
+        <td><input type="text" id="客戶名稱"  name="客戶名稱" class="form-control" /></td>
+        <td><input type="text" id="電話"  name="電話" class="form-control"/></td>
+        <td><input type="text" id="地址" name="地址" class="form-control" /></td>
+        <td><input type="text" id="Email" name="Email" class="form-control" /></td>
+        <td>@Html.DropDownList("客戶分類", null, htmlAttributes: new { @class = "form-control" ,@name= "客戶分類",@id= "客戶分類" } )</td>
+</tr>
+</table>
+}
 <table class="table">
     <tr>
         <th>
@@ -34,7 +49,8 @@
         </th>
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var item in Model)
+{
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.客戶名稱)
@@ -58,11 +74,27 @@
             @Html.DisplayFor(modelItem => item.客戶分類)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
         </td>
     </tr>
 }
 
 </table>
+
+<script type="text/javascript">
+    var Search = function () {
+        var json = {
+            "Search_Columns_客戶資料.客戶名稱": $("#c_name").val(),
+            "Search_Columns_客戶資料.電話": $("#c_phone").val(),
+            "Search_Columns_客戶資料.地址": $("#c_address").val(),
+            "Search_Columns_客戶資料.Email": $("#c_mail").val(),
+            "Search_Columns_客戶資料.客戶分類":$("#c_type").val()
+        }
+        $.post("@Url.Content("~/客戶資料/SearchColumns")", json, function(res) {
+             
+            }, "json");
+    }
+
+</script>

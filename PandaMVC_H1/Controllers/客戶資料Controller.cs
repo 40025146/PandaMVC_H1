@@ -12,15 +12,37 @@ namespace PandaMVC_H1.Controllers
 {
     public class 客戶資料Controller : BaseController
     {
-        private 客戶資料Entities2 db = new 客戶資料Entities2();
+        
 
         // GET: 客戶資料
-        public ActionResult Index()
+        public ActionResult Index(int? search,客戶資料 客)
         {
-            var data=客戶資料Repo.FindAll();
-            return View(data.ToList());
+            ViewBag.客戶分類 = new SelectList(客戶資料Repo.Get_客戶分類清單(), dataTextField: "Type", dataValueField: "Type");
+            if (search == 0)
+            {
+                var data = 客戶資料Repo.FindAll();
+                return View(data.ToList());
+            }
+            else if(search==1)
+            {
+                var data = 客戶資料Repo.FindCondition(客);
+                return View(data.ToList());
+            }
+            else
+            {
+                var data = 客戶資料Repo.FindAll();
+                return View(data.ToList());
+            }
+            return RedirectToAction("Index/0");
         }
+        [HttpPost]
+        public ActionResult SearchColumns(Search_Columns_客戶資料 columns)
+        {
+            客戶資料 客資 = new 客戶資料();
+            客資.InjectFrom(columns);
 
+            return Index(1,客資);
+        }
         // GET: 客戶資料/Details/5
         public ActionResult Details(int? id)
         {
@@ -40,7 +62,7 @@ namespace PandaMVC_H1.Controllers
         // GET: 客戶資料/Create
         public ActionResult Create()
         {
-            ViewBag.客戶分類 = new SelectList(客戶資料Repo.Get_客戶分類清單()); 
+            ViewBag.客戶分類 = new SelectList(客戶資料Repo.Get_客戶分類清單(), dataTextField: "Type", dataValueField: "Type"); 
             return View();
         }
 
@@ -128,7 +150,7 @@ namespace PandaMVC_H1.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                //db.Dispose();
             }
             base.Dispose(disposing);
         }

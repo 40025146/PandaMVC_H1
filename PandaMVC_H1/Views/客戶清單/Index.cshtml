@@ -4,11 +4,8 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>客戶清單</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="table">
     <tr>
         <th>
@@ -29,10 +26,22 @@
             @Html.DisplayFor(modelItem => item.客戶名稱)
         </th>
         <td>
+            @if (item.聯絡人數量 != null) {
             @Html.DisplayFor(modelItem => item.聯絡人數量)
+            }
+            else
+            {
+                <div>0</div>
+            }
         </td>
         <td>
+            @if (item.銀行數量 != null)
+            {
             @Html.DisplayFor(modelItem => item.銀行數量)
+            } else {
+            <div>0</div>
+            }
+
         </td>
         
     </tr>
