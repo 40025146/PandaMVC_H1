@@ -8,7 +8,7 @@ namespace PandaMVC_H1.Models
 
 		public EFUnitOfWork()
 		{
-			Context = new 客戶資料Entities();
+			Context = new 客戶資料Entities2();
 		}
 
 		public void Commit()

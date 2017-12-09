@@ -12,7 +12,7 @@ namespace PandaMVC_H1.Controllers
 {
     public class 客戶資料Controller : BaseController
     {
-        private 客戶資料Entities db = new 客戶資料Entities();
+        private 客戶資料Entities2 db = new 客戶資料Entities2();
 
         // GET: 客戶資料
         public ActionResult Index()
