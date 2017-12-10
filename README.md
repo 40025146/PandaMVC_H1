@@ -38,3 +38,4 @@ X 如果可以的話，透過 JavaScript 實作一些 AJAX 操作，後端 MVC �
 
 V 使用 ClosedXML 這個 NuGet 套件實作資料匯出功能，每個清單頁上都要有可以匯出 Excel 檔案的功能，要用到 FileResult 下載檔案
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/6kv8GW3cTuE" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
