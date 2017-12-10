@@ -8,40 +8,100 @@ using System.Web;
 using System.Web.Mvc;
 using PandaMVC_H1.Models;
 using Omu.ValueInjecter;
+using ClosedXML.Excel;
+
 namespace PandaMVC_H1.Controllers
 {
     public class 客戶資料Controller : BaseController
     {
-        
-
+     
+        public class CustomerList
+        {
+            public 客戶資料 客戶資料 { get; set; }
+            public IList<客戶資料> 客戶資料List { get;set; }
+        }
         // GET: 客戶資料
-        public ActionResult Index(int? search,客戶資料 客)
+        public ActionResult Index(string orderby,int? search,客戶資料 客)
         {
             ViewBag.客戶分類 = new SelectList(客戶資料Repo.Get_客戶分類清單(), dataTextField: "Type", dataValueField: "Type");
-            if (search == 0)
+            ViewData["客戶名稱"] = String.IsNullOrEmpty(orderby) ? "客戶名稱_desc" : "客戶名稱";
+            ViewData["客戶名稱"] = orderby == "客戶名稱" ? "客戶名稱_desc" : "客戶名稱";
+            ViewData["統一編號"] = orderby == "統一編號" ? "統一編號_desc" : "統一編號";
+            ViewData["電話"] = orderby == "電話" ? "電話_desc" : "電話";
+            ViewData["傳真"] = orderby == "傳真" ? "傳真_desc" : "傳真";
+            ViewData["地址"] = orderby == "地址" ? "地址_desc" : "地址";
+            ViewData["Email"] = orderby == "Email" ? "Email_desc" : "Email";
+            ViewData["客戶分類sort"] = orderby == "客戶分類sort" ? "客戶分類sort_desc" : "客戶分類sort";
+            var data= 客戶資料Repo.FindAll();
+             if(search==1)
             {
-                var data = 客戶資料Repo.FindAll();
-                return View(data.ToList());
+                data = 客戶資料Repo.FindCondition(客);
+                
             }
-            else if(search==1)
+            switch (orderby)
             {
-                var data = 客戶資料Repo.FindCondition(客);
-                return View(data.ToList());
+                case "客戶名稱_desc":
+                    data = data.OrderByDescending(s => s.客戶名稱);
+                    break;
+                case "客戶名稱":
+                    data = data.OrderBy(s => s.客戶名稱);
+                    break;
+                case "統一編號_desc":
+                    data = data.OrderByDescending(s => s.統一編號);
+                    break;
+                case "統一編號":
+                    data = data.OrderBy(s => s.統一編號);
+                    break;
+                case "電話_desc":
+                    data = data.OrderByDescending(s => s.電話);
+                    break;
+                case "電話":
+                    data = data.OrderBy(s => s.電話);
+                    break;
+                case "傳真_desc":
+                    data = data.OrderByDescending(s => s.傳真);
+                    break;
+                case "傳真":
+                    data = data.OrderBy(s => s.傳真);
+                    break;
+                case "地址_desc":
+                    data = data.OrderByDescending(s => s.地址);
+                    break;
+                case "地址":
+                    data = data.OrderBy(s => s.地址);
+                    break;
+                case "Email_desc":
+                    data = data.OrderByDescending(s => s.Email);
+                    break;
+                case "Email":
+                    data = data.OrderBy(s => s.Email);
+                    break;
+                case "客戶分類sort_desc":
+                    data = data.OrderByDescending(s => s.客戶分類);
+                    break;
+                case "客戶分類sort":
+                    data = data.OrderBy(s => s.客戶分類);
+                    break;
+                default:
+                    data = data.OrderBy(s => s.客戶名稱);
+                    break;
             }
-            else
-            {
-                var data = 客戶資料Repo.FindAll();
-                return View(data.ToList());
-            }
-            return RedirectToAction("Index/0");
+            
+            return View(data.ToList());
         }
         [HttpPost]
         public ActionResult SearchColumns(Search_Columns_客戶資料 columns)
         {
-            客戶資料 客資 = new 客戶資料();
+            string orderby = "";
+            if (ViewData["客戶名稱"] != null)
+            {
+                orderby = (ViewData["客戶名稱"]).ToString();
+            }
+
+                客戶資料 客資 = new 客戶資料();
             客資.InjectFrom(columns);
 
-            return Index(1,客資);
+            return Index(orderby,1, 客資);
         }
         // GET: 客戶資料/Details/5
         public ActionResult Details(int? id)
@@ -153,6 +213,28 @@ namespace PandaMVC_H1.Controllers
                 //db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        [HttpPost]
+        public ActionResult Excel_Export( [Bind(Prefix = "客戶資料")]IList<客戶資料> customers)
+        {
+           
+            DataSet ds = new DataSet();
+            DataTable 客戶資料Table = ds.Tables["客戶資料"];
+            var data = from c in customers
+                       select new { c.客戶名稱, c.統一編號, c.電話, c.傳真, c.地址, c.Email, c.客戶分類 };
+            客戶資料Table = LINQToDataTable(data);
+
+            string date = GetSystemDate();
+            string file_path = Server.MapPath("~/App_Data/Excel_客戶資料" + date + ".xlsx");
+            XLWorkbook wbook = new XLWorkbook();
+            //IXLWorksheet wsheet = wbook.AddWorksheet("客戶資料");
+            wbook.Worksheets.Add(客戶資料Table,"客戶資料");
+
+            wbook.SaveAs(file_path);
+            return File(
+                file_path, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Excel_客戶資料" + date + ".xlsx"
+                );
         }
     }
 }

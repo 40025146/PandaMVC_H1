@@ -6,45 +6,72 @@
 
 <h2>客戶清單</h2>
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.客戶名稱)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.聯絡人數量)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.銀行數量)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <th>
-            @Html.DisplayFor(modelItem => item.客戶名稱)
-        </th>
-        <td>
-            @if (item.聯絡人數量 != null) {
-            @Html.DisplayFor(modelItem => item.聯絡人數量)
-            }
-            else
-            {
-                <div>0</div>
-            }
-        </td>
-        <td>
-            @if (item.銀行數量 != null)
-            {
-            @Html.DisplayFor(modelItem => item.銀行數量)
-            } else {
-            <div>0</div>
-            }
-
-        </td>
-        
-    </tr>
+@using (Html.BeginForm("SearchColumns", "客戶清單", "post"))
+{
+    <table class="table table-bordered">
+        <tr><th></th><th>客戶名稱</th><th>聯絡人數量</th><th>銀行數量</th></tr>
+        <tr>
+            <td><input type="submit" id="search" class="btn btn-primary" value="搜尋" /></td>
+            <td><input type="text" id="客戶名稱" name="客戶名稱" class="form-control" /></td>
+            <td><input type="text" id="聯絡人數量" name="聯絡人數量" class="form-control" /></td>
+            <td><input type="text" id="銀行數量" name="銀行數量" class="form-control" /></td>
+        </tr>
+    </table>
 }
+    @using (Html.BeginForm("Excel_Export", "客戶清單", FormMethod.Post))
+    {
+        <table class="table">
+            <tr>
+                <th>
+                    <a href="@Url.Action("Index", "客戶清單",new { orderby=@ViewData["客戶名稱"]})" asp-route-sortOrder="@ViewData["客戶名稱"]">@Html.DisplayNameFor(model => model.客戶名稱)</a>
+                </th>
+                <th>
+                    <a href="@Url.Action("Index", "客戶清單",new { orderby=@ViewData["聯絡人數量"]})" asp-route-sortOrder="@ViewData["聯絡人數量"]">@Html.DisplayNameFor(model => model.聯絡人數量)</a>
+                </th>
+                <th>
+                    <a href="@Url.Action("Index", "客戶清單",new { orderby=@ViewData["銀行數量"]})" asp-route-sortOrder="@ViewData["銀行數量"]">@Html.DisplayNameFor(model => model.銀行數量)</a>
+                </th>
+                <th></th>
+            </tr>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <th>
+                    @Html.DisplayFor(modelItem => item.客戶名稱)
+                    <input type="hidden" name="客戶清單.Index" value="@item.客戶名稱" />
+                    <input type="hidden" name="客戶清單[@item.客戶名稱].客戶名稱" value="@item.客戶名稱" />
 
-</table>
+                </th>
+                <td>
+                    @if (item.聯絡人數量 != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.聯絡人數量)
+                        <input type="hidden" name="客戶清單[@item.客戶名稱].聯絡人數量" value="@item.聯絡人數量" />
+                    }
+                    else
+                    {
+                        <div>0</div>
+                    }
+                </td>
+                <td>
+                    @if (item.銀行數量 != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.銀行數量)
+                        <input type="hidden" name="客戶清單[@item.客戶名稱].銀行數量" value="@item.銀行數量" />
+
+                    }
+                    else
+                    {
+                        <div>0</div>
+                    }
+
+                </td>
+
+            </tr>
+            }
+        </table>
+        <input type="submit" value="Excel Export" />
+    }
+
+
+

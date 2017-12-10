@@ -9,60 +9,78 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.職稱)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.姓名)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Email)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.手機)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.電話)
-        </th>
 
-        <th>
-            @Html.DisplayNameFor(model => model.客戶資料.客戶名稱)
-        </th>
-        <th></th>
-    </tr>
+@using (Html.BeginForm("Excel_Export", "客戶聯絡人", FormMethod.Post))
+{
+    <table class="table">
+        <tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.職稱)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.姓名)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.手機)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.電話)
-        </td>
 
-        <td>
-            @Html.DisplayFor(modelItem => item.客戶資料.客戶名稱)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
+            <th>
+                <a href="@Url.Action("Index", "客戶聯絡人", new { orderby = @ViewData["職稱"] })" asp-route-sortOrder="@ViewData["職稱"]">@Html.DisplayNameFor(model => model.職稱)</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", "客戶聯絡人", new { orderby = @ViewData["姓名"] })" asp-route-sortOrder="@ViewData["姓名"]">@Html.DisplayNameFor(model => model.姓名)</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", "客戶聯絡人", new { orderby = @ViewData["Email"] })" asp-route-sortOrder="@ViewData["Email"]">@Html.DisplayNameFor(model => model.Email)</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", "客戶聯絡人", new { orderby = @ViewData["手機"] })" asp-route-sortOrder="@ViewData["手機"]">@Html.DisplayNameFor(model => model.手機)</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", "客戶聯絡人", new { orderby = @ViewData["電話"] })" asp-route-sortOrder="@ViewData["電話"]">@Html.DisplayNameFor(model => model.電話)</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", "客戶聯絡人", new { orderby = @ViewData["客戶名稱"] })" asp-route-sortOrder="@ViewData["客戶名稱"]">@Html.DisplayNameFor(model => model.客戶資料.客戶名稱)</a>
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <input type="hidden" name="客戶聯絡人.Index" value="@item.Id" />
+                <td>
+                    @Html.DisplayFor(modelItem => item.職稱)
+                    <input type="hidden" name="客戶聯絡人[@item.Id].職稱" value="@item.職稱" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.姓名)
+                    <input type="hidden" name="客戶聯絡人[@item.Id].姓名" value="@item.姓名" />
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                    <input type="hidden" name="客戶聯絡人[@item.Id].Email" value="@item.Email" />
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.手機)
+                    <input type="hidden" name="客戶聯絡人[@item.Id].手機" value="@item.手機" />
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.電話)
+                    <input type="hidden" name="客戶聯絡人[@item.Id].電話" value="@item.電話" />
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.客戶資料.客戶名稱)
+                    <input type="hidden" name="客戶聯絡人[@item.Id].客戶資料.客戶名稱" value="@item.客戶資料.客戶名稱" />
+
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+
+    </table>
+    <input type="submit" value="Excel Export" />
 }
-
-</table>
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>

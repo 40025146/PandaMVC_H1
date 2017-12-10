@@ -1,0 +1,66 @@
+﻿@model IEnumerable<PandaMVC_H1.Models.客戶清單>
+
+@{
+    ViewBag.Title = "SearchColumns";
+}
+
+<h2>SearchColumns</h2>
+
+
+@using (Html.BeginForm("Excel_Export", "客戶清單", FormMethod.Post))
+{
+    <table class="table">
+        <tr>
+            <th>
+                <a href="@Url.Action("Index", "客戶清單",new { orderby=@ViewData["客戶名稱"]})" asp-route-sortOrder="@ViewData["客戶名稱"]">@Html.DisplayNameFor(model => model.客戶名稱)</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", "客戶清單",new { orderby=@ViewData["聯絡人數量"]})" asp-route-sortOrder="@ViewData["聯絡人數量"]">@Html.DisplayNameFor(model => model.聯絡人數量)</a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index", "客戶清單",new { orderby=@ViewData["銀行數量"]})" asp-route-sortOrder="@ViewData["銀行數量"]">@Html.DisplayNameFor(model => model.銀行數量)</a>
+            </th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>
+                    @Html.DisplayFor(modelItem => item.客戶名稱)
+                    <input type="hidden" name="客戶清單.Index" value="@item.客戶名稱" />
+                    <input type="hidden" name="客戶清單[@item.客戶名稱].客戶名稱" value="@item.客戶名稱" />
+
+                </th>
+                <td>
+                    @if (item.聯絡人數量 != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.聯絡人數量)
+                        <input type="hidden" name="客戶清單[@item.客戶名稱].聯絡人數量" value="@item.聯絡人數量" />
+                    }
+                    else
+                    {
+                        <div>0</div>
+                    }
+                </td>
+                <td>
+                    @if (item.銀行數量 != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.銀行數量)
+                        <input type="hidden" name="客戶清單[@item.客戶名稱].銀行數量" value="@item.銀行數量" />
+
+                    }
+                    else
+                    {
+                        <div>0</div>
+                    }
+
+                </td>
+
+            </tr>
+        }
+    </table>
+        <input type="submit" value="Excel Export" />
+}
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

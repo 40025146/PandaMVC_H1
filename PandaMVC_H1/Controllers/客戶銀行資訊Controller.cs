@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using PandaMVC_H1.Models;
 using Omu.ValueInjecter;
+using ClosedXML.Excel;
+
 namespace PandaMVC_H1.Controllers
 {
     public class 客戶銀行資訊Controller : BaseController
@@ -156,6 +158,28 @@ namespace PandaMVC_H1.Controllers
                 //db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        [HttpPost]
+        public ActionResult Excel_Export([Bind(Prefix = "客戶銀行資訊")]IList<客戶銀行資訊> customers)
+        {
+
+            DataSet ds = new DataSet();
+            DataTable 客戶銀行資訊Table = ds.Tables["客戶銀行資訊"];
+            var data = from c in customers
+                       select new { c.銀行名稱, c.銀行代碼, c.分行代碼, c.帳戶名稱, c.帳戶號碼, c.客戶資料.客戶名稱 };
+            客戶銀行資訊Table = LINQToDataTable(data);
+
+            string date = GetSystemDate();
+            string file_path = Server.MapPath("~/App_Data/Excel_客戶銀行資訊" + date + ".xlsx");
+            XLWorkbook wbook = new XLWorkbook();
+            //IXLWorksheet wsheet = wbook.AddWorksheet("客戶資料");
+            wbook.Worksheets.Add(客戶銀行資訊Table, "客戶銀行資訊");
+
+            wbook.SaveAs(file_path);
+            return File(
+                file_path, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Excel_客戶銀行資訊" + date + ".xlsx"
+                );
         }
     }
 }

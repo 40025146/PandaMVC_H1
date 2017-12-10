@@ -41,5 +41,7 @@ namespace PandaMVC_H1.Models
 
         public virtual ICollection<客戶銀行資訊> 客戶銀行資訊 { get; set; }
         public virtual ICollection<客戶聯絡人> 客戶聯絡人 { get; set; }
+
+
     }
 }

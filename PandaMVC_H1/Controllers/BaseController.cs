@@ -4,6 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using PandaMVC_H1.Models;
+using System.Data;
+using System.Reflection;
+
 namespace PandaMVC_H1.Controllers
 {
     public class BaseController : Controller
@@ -38,6 +41,58 @@ namespace PandaMVC_H1.Controllers
             public string 手機 { get; set; }
             public string 電話 { get; set; }
             public string 客戶名稱 { get; set; }
+        }
+        public class Search_Columns_客戶清單資料
+        {
+            public string 客戶名稱 { get; set; }
+            public string 聯絡人數量 { get; set; }
+            public string 銀行數量 { get; set; }
+        }
+        public DataTable LINQToDataTable<T>(IEnumerable<T> varlist)
+        {
+            DataTable dtReturn = new DataTable();
+
+            // column names 
+            PropertyInfo[] oProps = null;
+
+            if (varlist == null) return dtReturn;
+
+            foreach (T rec in varlist)
+            {
+                // Use reflection to get property names, to create table, Only first time, others  will follow
+                 if (oProps == null)
+                {
+                    oProps = ((Type)rec.GetType()).GetProperties();
+                    foreach (PropertyInfo pi in oProps)
+                    {
+                        Type colType = pi.PropertyType;
+
+                        if ((colType.IsGenericType) && (colType.GetGenericTypeDefinition()
+                        == typeof(Nullable<>)))
+                        {
+                            colType = colType.GetGenericArguments()[0];
+                        }
+
+                        dtReturn.Columns.Add(new DataColumn(pi.Name, colType));
+                    }
+                }
+
+                DataRow dr = dtReturn.NewRow();
+
+                foreach (PropertyInfo pi in oProps)
+                {
+                    dr[pi.Name] = pi.GetValue(rec, null) == null ? DBNull.Value : pi.GetValue
+                    (rec, null);
+                }
+
+                dtReturn.Rows.Add(dr);
+            }
+            return dtReturn;
+        }
+        public string  GetSystemDate()
+        {
+            DateTime dt = new DateTime();
+            return dt.ToBinary().ToString();
         }
     }
 }
