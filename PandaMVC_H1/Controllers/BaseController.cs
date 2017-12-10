@@ -45,8 +45,8 @@ namespace PandaMVC_H1.Controllers
         public class Search_Columns_客戶清單資料
         {
             public string 客戶名稱 { get; set; }
-            public string 聯絡人數量 { get; set; }
-            public string 銀行數量 { get; set; }
+            public Nullable<int> 聯絡人數量 { get; set; }
+            public Nullable<int> 銀行數量 { get; set; }
         }
         public DataTable LINQToDataTable<T>(IEnumerable<T> varlist)
         {
