@@ -126,7 +126,12 @@ namespace PandaMVC_H1.Controllers
         {
             if (ModelState.IsValid)
             {
-
+                var data = 客戶聯絡人Repo.FindCondition_Email(聯絡人.Email);
+                if (data.Count() > 0)
+                {
+                    TempData["error"] = "Email重複不可新增";
+                    return RedirectToAction("Index");
+                }
                 客戶聯絡人Repo.Add(聯絡人);
                 客戶聯絡人Repo.UnitOfWork.Commit();
                 return RedirectToAction("Index");

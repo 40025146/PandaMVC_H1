@@ -9,8 +9,10 @@
 <p>
     @Html.ActionLink("Create New", "Create")
     &nbsp;
-    
 </p>
+@if (TempData["error"] != null) {
+  <div class="alert alert-danger">@TempData["error"].ToString()</div>
+}
 @using (Html.BeginForm("SearchColumns", "客戶聯絡人", "post"))
 {
     <table class="table table-bordered">

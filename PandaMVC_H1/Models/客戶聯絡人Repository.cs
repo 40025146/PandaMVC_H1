@@ -31,7 +31,10 @@ namespace PandaMVC_H1.Models
 
             return data;
         }
-
+        public IQueryable<客戶聯絡人> FindCondition_Email(string mail)
+        {
+            return this.All().Where(p => p.Email == mail);
+        }
         public IQueryable<客戶聯絡人> FindCondition(客戶聯絡人 客)
         {
 
