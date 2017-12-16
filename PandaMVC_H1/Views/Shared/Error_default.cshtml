@@ -1,0 +1,33 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+@using System.Data.Entity.Validation
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width" />
+    <title>錯誤</title>
+</head>
+<body>
+    <hgroup>
+        @{
+            var ex = Model.Exception as DbEntityValidationException;
+        }
+        <h1>錯誤。@Model.ControllerName / @Model.ActionName</h1>
+        <h2>處理您的要求時發生錯誤。</h2>
+        <ul>
+            @{
+                foreach (DbEntityValidationResult re in ex.EntityValidationErrors)
+                {
+                    foreach (DbValidationError err in re.ValidationErrors)
+                    {
+                        <li>
+                           
+                            @err.PropertyName 發生錯誤，訊息： @err.ErrorMessage
+                        </li>
+                    }
+                }
+            }
+        </ul>
+    </hgroup>
+</body>
+</html>

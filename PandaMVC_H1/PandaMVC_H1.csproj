@@ -345,6 +345,7 @@
     <Content Include="Views\客戶資料\Excel_Export.cshtml" />
     <Content Include="Views\客戶清單\SearchColumns.cshtml" />
     <Content Include="Views\客戶資料\Edit_list.cshtml" />
+    <Content Include="Views\Shared\Error_default.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

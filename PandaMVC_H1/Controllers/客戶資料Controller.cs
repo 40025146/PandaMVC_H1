@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using PandaMVC_H1.Models;
 using Omu.ValueInjecter;
 using ClosedXML.Excel;
+using System.Data.Entity.Validation;
 
 namespace PandaMVC_H1.Controllers
 {
@@ -252,20 +253,41 @@ namespace PandaMVC_H1.Controllers
             return View(data);
         }
         [HttpPost]
+        [HandleError(ExceptionType = typeof(DbEntityValidationException), View = "Error_default")]
         public ActionResult Edit_Patch(Customer[] Customer)
         {
-            if (ModelState.IsValid)
+            try
             {
-                foreach (var 客 in Customer)
+                if (ModelState.IsValid)
                 {
-                    var 客Item = 客戶資料Repo.Find(客.Id);
-                    客Item.InjectFrom(客);
-                    客戶資料Repo.UnitOfWork.Commit();
-                }
-                
-            }
+                    foreach (var 客 in Customer)
+                    {
+                        var 客Item = 客戶資料Repo.Find(客.Id);
+                        客Item.InjectFrom(客);
+                        客戶資料Repo.UnitOfWork.Commit();
+                    }
 
-            return RedirectToAction("Edit_list");
+                }
+                return RedirectToAction("Edit_list");
+            }
+            catch (DbEntityValidationException ex)
+            {
+                var allErrors = new List<string>();
+
+                foreach (DbEntityValidationResult re in ex.EntityValidationErrors)
+                {
+                    foreach (DbValidationError err in re.ValidationErrors)
+                    {
+                        allErrors.Add(err.ErrorMessage);
+                    }
+                }
+
+                ViewBag.Errors = allErrors;
+                throw;
+            }
+           
+
+            
         }
     }
 }
