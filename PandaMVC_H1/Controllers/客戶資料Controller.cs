@@ -14,14 +14,19 @@ namespace PandaMVC_H1.Controllers
 {
     public class 客戶資料Controller : BaseController
     {
-     
-        public class CustomerList
+
+        public class Customer
         {
-            public 客戶資料 客戶資料 { get; set; }
-            public IList<客戶資料> 客戶資料List { get;set; }
+            public int Id { get; set; }
+            public string 客戶名稱 { get; set; }
+            public string 統一編號 { get; set; }
+            public string 電話 { get; set; }
+            public string 傳真 { get; set; }
+            public string 地址 { get; set; }
+            public string Email { get; set; }
         }
         // GET: 客戶資料
-        public ActionResult Index(string orderby,int? search,客戶資料 客)
+        public ActionResult Index(string orderby, int? search, 客戶資料 客)
         {
             ViewBag.客戶分類 = new SelectList(客戶資料Repo.Get_客戶分類清單(), dataTextField: "Type", dataValueField: "Type");
             ViewData["客戶名稱"] = String.IsNullOrEmpty(orderby) ? "客戶名稱_desc" : "客戶名稱";
@@ -32,11 +37,11 @@ namespace PandaMVC_H1.Controllers
             ViewData["地址"] = orderby == "地址" ? "地址_desc" : "地址";
             ViewData["Email"] = orderby == "Email" ? "Email_desc" : "Email";
             ViewData["客戶分類sort"] = orderby == "客戶分類sort" ? "客戶分類sort_desc" : "客戶分類sort";
-            var data= 客戶資料Repo.FindAll();
-             if(search==1)
+            var data = 客戶資料Repo.FindAll();
+            if (search == 1)
             {
                 data = 客戶資料Repo.FindCondition(客);
-                
+
             }
             switch (orderby)
             {
@@ -86,7 +91,7 @@ namespace PandaMVC_H1.Controllers
                     data = data.OrderBy(s => s.客戶名稱);
                     break;
             }
-            
+
             return View(data.ToList());
         }
         [HttpPost]
@@ -98,10 +103,10 @@ namespace PandaMVC_H1.Controllers
                 orderby = (ViewData["客戶名稱"]).ToString();
             }
 
-                客戶資料 客資 = new 客戶資料();
+            客戶資料 客資 = new 客戶資料();
             客資.InjectFrom(columns);
 
-            return Index(orderby,1, 客資);
+            return Index(orderby, 1, 客資);
         }
         // GET: 客戶資料/Details/5
         public ActionResult Details(int? id)
@@ -122,7 +127,7 @@ namespace PandaMVC_H1.Controllers
         // GET: 客戶資料/Create
         public ActionResult Create()
         {
-            ViewBag.客戶分類 = new SelectList(客戶資料Repo.Get_客戶分類清單(), dataTextField: "Type", dataValueField: "Type"); 
+            ViewBag.客戶分類 = new SelectList(客戶資料Repo.Get_客戶分類清單(), dataTextField: "Type", dataValueField: "Type");
             return View();
         }
 
@@ -135,7 +140,7 @@ namespace PandaMVC_H1.Controllers
         {
             if (ModelState.IsValid)
             {
-                
+
                 客戶資料Repo.Add(客戶資料);
                 客戶資料Repo.UnitOfWork.Commit();
                 return RedirectToAction("Index");
@@ -157,7 +162,7 @@ namespace PandaMVC_H1.Controllers
                 return HttpNotFound();
             }
             string type = 客戶資料.客戶分類.Trim();
-            ViewBag.客戶分類 = new SelectList(items:客戶資料Repo.Get_客戶分類清單(),dataTextField: "Type", dataValueField:"Type",selectedValue: type);
+            ViewBag.客戶分類 = new SelectList(items: 客戶資料Repo.Get_客戶分類清單(), dataTextField: "Type", dataValueField: "Type", selectedValue: type);
             return View(客戶資料);
         }
 
@@ -202,7 +207,7 @@ namespace PandaMVC_H1.Controllers
             客戶資料 客戶資料 = 客戶資料Repo.Find(id);
             客戶資料Repo.Delete(客戶資料);
             客戶資料Repo.UnitOfWork.Commit();
-            
+
             return RedirectToAction("Index");
         }
 
@@ -216,9 +221,9 @@ namespace PandaMVC_H1.Controllers
         }
 
         [HttpPost]
-        public ActionResult Excel_Export( [Bind(Prefix = "客戶資料")]IList<客戶資料> customers)
+        public ActionResult Excel_Export([Bind(Prefix = "客戶資料")]IList<客戶資料> customers)
         {
-           
+
             DataSet ds = new DataSet();
             DataTable 客戶資料Table = ds.Tables["客戶資料"];
             var data = from c in customers
@@ -229,12 +234,38 @@ namespace PandaMVC_H1.Controllers
             string file_path = Server.MapPath("~/App_Data/Excel_客戶資料" + date + ".xlsx");
             XLWorkbook wbook = new XLWorkbook();
             //IXLWorksheet wsheet = wbook.AddWorksheet("客戶資料");
-            wbook.Worksheets.Add(客戶資料Table,"客戶資料");
+            wbook.Worksheets.Add(客戶資料Table, "客戶資料");
 
             wbook.SaveAs(file_path);
             return File(
                 file_path, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Excel_客戶資料" + date + ".xlsx"
                 );
+        }
+
+
+        public ActionResult Edit_list()
+        {
+            var data = 客戶資料Repo.All();
+
+
+
+            return View(data);
+        }
+        [HttpPost]
+        public ActionResult Edit_Patch(Customer[] Customer)
+        {
+            if (ModelState.IsValid)
+            {
+                foreach (var 客 in Customer)
+                {
+                    var 客Item = 客戶資料Repo.Find(客.Id);
+                    客Item.InjectFrom(客);
+                    客戶資料Repo.UnitOfWork.Commit();
+                }
+                
+            }
+
+            return RedirectToAction("Edit_list");
         }
     }
 }
